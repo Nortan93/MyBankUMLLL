@@ -1,22 +1,25 @@
 package presentation;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Map;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import application.AccountManager;
 import application.AuthenticationManager;
 import application.RoleManager;
 import application.TransactionManager;
-import com.fasterxml.jackson.databind.ObjectMapper; // Switched from Gson
 import io.javalin.http.Context;
+import model.Account;
 import model.User;
-
-import java.math.BigDecimal;
-import java.util.Map;
 
 public class AccountController {
     private AccountManager accountManager;
     private TransactionManager transactionManager;
     private AuthenticationManager authManager;
     private RoleManager roleManager;
-    private ObjectMapper mapper = new ObjectMapper(); // Switched from Gson
+    private ObjectMapper mapper = new ObjectMapper();
 
     public AccountController(AccountManager am, TransactionManager tm, AuthenticationManager auth, RoleManager role) {
         this.accountManager = am;
@@ -25,10 +28,81 @@ public class AccountController {
         this.roleManager = role;
     }
 
+    /**
+     * NEW: Get accounts for the logged-in user
+     * Endpoint: GET /api/accounts
+     */
+    public void getAccounts(Context ctx) {
+        try {
+            // 1. Verify Session
+            String token = ctx.header("Authorization");
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7); // Remove "Bearer " prefix
+            }
+            
+            User user = authManager.getUserByToken(token);
+            if (user == null) {
+                ctx.status(401).json(Map.of("error", "Unauthorized"));
+                return;
+            }
+
+            // 2. Get accounts for this user
+            List<Account> accounts = accountManager.getAccountsByUserId(user.getUserID());
+            
+            // 3. Return accounts as JSON
+            ctx.status(200).json(accounts);
+
+        } catch (Exception e) {
+            ctx.status(400).json(Map.of("error", e.getMessage() != null ? e.getMessage() : "Failed to fetch accounts"));
+        }
+    }
+
+    /**
+     * NEW: Get accounts for a specific user (Teller/Admin only)
+     * Endpoint: GET /api/accounts/user/{userId}
+     */
+    public void getAccountsByUser(Context ctx) {
+        try {
+            // 1. Verify Session
+            String token = ctx.header("Authorization");
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            
+            User currentUser = authManager.getUserByToken(token);
+            if (currentUser == null) {
+                ctx.status(401).json(Map.of("error", "Unauthorized"));
+                return;
+            }
+
+            // 2. Check Permissions (only Teller/Admin can view other users' accounts)
+            if (!roleManager.canAccess(currentUser, RoleManager.Feature.SEARCH_CUSTOMERS)) {
+                ctx.status(403).json(Map.of("error", "Access Denied"));
+                return;
+            }
+
+            // 3. Get target user ID from path parameter
+            String targetUserId = ctx.pathParam("userId");
+            
+            // 4. Get accounts for that user
+            List<Account> accounts = accountManager.getAccountsByUserId(targetUserId);
+            
+            // 5. Return accounts as JSON
+            ctx.status(200).json(accounts);
+
+        } catch (Exception e) {
+            ctx.status(400).json(Map.of("error", e.getMessage() != null ? e.getMessage() : "Failed to fetch accounts"));
+        }
+    }
+
     public void handleTransaction(Context ctx) {
         try {
             // 1. Verify Session
             String token = ctx.header("Authorization");
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7); // Remove "Bearer " prefix
+            }
+            
             User user = authManager.getUserByToken(token);
 
             // 2. Check Permissions (RBAC)
@@ -37,7 +111,6 @@ public class AccountController {
             }
 
             // 3. Parse Request (Using Jackson)
-            // Body: { "type": "DEPOSIT", "accountNumber": "123", "amount": 50.00, "targetAccount": "456" }
             @SuppressWarnings("unchecked")
             Map<String, Object> req = mapper.readValue(ctx.body(), Map.class);
             

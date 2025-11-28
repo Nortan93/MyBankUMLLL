@@ -1,9 +1,16 @@
+import application.AccountManager;
+import application.AdminManager;
+import application.AuthenticationManager;
+import application.RoleManager;
+import application.SearchManager;
+import application.TransactionManager;
+import data.JsonFileService;
 import io.javalin.Javalin;
 import io.javalin.http.staticfiles.Location;
-
-import data.JsonFileService;
-import application.*;
-import presentation.*;
+import presentation.AccountController;
+import presentation.AdminController;
+import presentation.AuthController;
+import presentation.SearchController;
 
 public class Main {
     public static void main(String[] args) {
@@ -36,18 +43,23 @@ public class Main {
 
         // 5. Register API Routes
         
-        // --- Auth ---
+        // --- Authentication ---
         app.post("/api/login", authController::login);
         app.post("/api/logout", authController::logout);
+        app.post("/api/change-password", authController::changePassword);
 
         // --- Account & Transactions ---
+        app.get("/api/accounts", accountController::getAccounts);
+        app.get("/api/accounts/user/{userId}", accountController::getAccountsByUser);
         app.post("/api/transaction", accountController::handleTransaction);
         
-        // --- Admin ---
+        
+        // --- Admin Functions ---
         app.post("/api/admin/create-user", adminController::createUser);
         app.patch("/api/admin/users/{id}", adminController::updateUser);
+        app.get("/api/admin/audit-logs", adminController::getAuditLogs);
         
-        // --- Search (Added) ---
+        // --- Search ---
         app.get("/api/search", searchController::searchUsers);
 
         System.out.println("Backend running on http://localhost:8080");

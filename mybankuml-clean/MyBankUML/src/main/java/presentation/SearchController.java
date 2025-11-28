@@ -1,13 +1,13 @@
 package presentation;
 
+import java.util.List;
+import java.util.Map;
+
 import application.AuthenticationManager;
 import application.RoleManager;
 import application.SearchManager;
 import io.javalin.http.Context;
 import model.User;
-
-import java.util.List;
-import java.util.Map;
 
 public class SearchController {
     private SearchManager searchManager;
@@ -24,15 +24,33 @@ public class SearchController {
         try {
             // 1. Verify Authentication
             String token = ctx.header("Authorization");
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7); // Remove "Bearer " prefix
+            }
+            
             User currentUser = authManager.getUserByToken(token);
+            
+            if (currentUser == null) {
+                ctx.status(401).json(Map.of("error", "Invalid session"));
+                return;
+            }
 
             // 2. Verify Role (RBAC) - Only Teller or Admin can search
             if (!roleManager.canAccess(currentUser, RoleManager.Feature.SEARCH_CUSTOMERS)) {
-                throw new Exception("Access Denied: Insufficient Permissions");
+                ctx.status(403).json(Map.of("error", "Access Denied: Insufficient Permissions"));
+                return;
             }
 
-            // 3. Get Query Parameter (e.g., GET /api/search?q=Smith)
+            // 3. Get Query Parameter - Support both 'q' and 'query'
             String query = ctx.queryParam("q");
+            if (query == null) {
+                query = ctx.queryParam("query");
+            }
+            
+            if (query == null || query.trim().isEmpty()) {
+                ctx.status(400).json(Map.of("error", "Search query is required"));
+                return;
+            }
             
             // 4. Execute Search (Logic Layer)
             List<User> results = searchManager.searchUsers(query);

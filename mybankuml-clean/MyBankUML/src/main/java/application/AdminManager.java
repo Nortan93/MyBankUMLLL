@@ -1,5 +1,7 @@
 package application;
 
+import java.util.List;
+
 import data.DatabaseRepository;
 import model.AuditLog;
 import model.User;
@@ -12,7 +14,6 @@ public class AdminManager {
         this.database = database;
     }
 
-    // ... createUser method remains the same ...
     public void createUser(User adminUser, User newUser, String rawPassword) throws Exception {
         if (database.findUserByUsername(newUser.getUsername()).isPresent()) {
             throw new Exception("Username already exists");
@@ -24,7 +25,6 @@ public class AdminManager {
         logAudit(adminUser, "CREATE_USER", newUser.getUserID());
     }
 
-    // NEW: Update User Status (Active/Inactive)
     public void updateUserStatus(User adminUser, String targetUserId, String statusStr) throws Exception {
         User target = getUser(targetUserId);
         try {
@@ -37,15 +37,11 @@ public class AdminManager {
         }
     }
 
-    // NEW: Update User Role
     public void updateUserRole(User adminUser, String targetUserId, String roleStr) throws Exception {
         User target = getUser(targetUserId);
         try {
             User.Role newRole = User.Role.valueOf(roleStr.toUpperCase());
             target.setRole(newRole); 
-            // Note: In a full DB system we might need to cast/convert the object type, 
-            // but with Jackson JSON, changing the enum and saving is usually sufficient 
-            // if the fields are compatible.
             database.saveUser(target);
             logAudit(adminUser, "UPDATE_ROLE_" + newRole, targetUserId);
         } catch (IllegalArgumentException e) {
@@ -53,12 +49,16 @@ public class AdminManager {
         }
     }
 
-    // NEW: Toggle 2FA (Cosmetic)
     public void toggle2FA(User adminUser, String targetUserId, boolean enabled) throws Exception {
         User target = getUser(targetUserId);
         target.setTwoFactorEnabled(enabled);
         database.saveUser(target);
         logAudit(adminUser, "TOGGLE_2FA_" + enabled, targetUserId);
+    }
+
+    // NEW: Fetch all audit logs
+    public List<AuditLog> getAllAuditLogs() {
+        return database.findAllAuditLogs();
     }
 
     private User getUser(String id) throws Exception {

@@ -1,0 +1,189 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.container {
+    width: 100%;
+    max-width: 1200px;
+}
+
+.login-box {
+    background: white;
+    padding: 40px;
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.login-box h1 {
+    color: #667eea;
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 2em;
+}
+
+.login-box h2 {
+    color: #333;
+    text-align: center;
+    margin-bottom: 30px;
+    font-weight: normal;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    color: #333;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+.btn {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-primary {
+    background-color: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #5568d3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+    width: auto;
+    padding: 8px 20px;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+.error-message,
+.message.error {
+    color: #dc3545;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.message.success {
+    color: #28a745;
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+}
+
+/* Dashboard styles */
+header {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+header h1 {
+    color: #667eea;
+    font-size: 1.8em;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.user-info span {
+    color: #333;
+    font-weight: 500;
+}
+
+.view {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.view h2 {
+    color: #667eea;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #667eea;
+}
+
+.view h3 {
+    color: #333;
+    margin-top: 30px;
+    margin-bottom: 15px;
+}
+
+.admin-section,
+.search-section {
+    margin-bottom: 40px;
+}
+
+#accountsList {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 5px;
+}
+
+.search-result {
+    padding: 15px;
+    margin: 10px 0;
+    background: #f8f9fa;
+    border-radius: 5px;
+    border-left: 4px solid #667eea;
+}
+
+#searchResults,
+#adminSearchResults {
+    margin-top: 20px;
+}

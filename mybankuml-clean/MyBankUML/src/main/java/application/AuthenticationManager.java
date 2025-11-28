@@ -89,4 +89,21 @@ public class AuthenticationManager {
         return database.findUserByID(session.userId)
                 .orElseThrow(() -> new Exception("User not found"));
     }
+
+    public void changePassword(String username, String currentPassword, String newPassword) throws Exception {
+    User user = database.findUserByUsername(username)
+            .orElseThrow(() -> new Exception("User not found"));
+    
+    if (!util.SecurityUtils.checkPassword(currentPassword, user.getPasswordHash())) {
+        throw new Exception("Current password is incorrect");
+    }
+    
+    if (newPassword == null || newPassword.length() < 6) {
+        throw new Exception("New password must be at least 6 characters");
+    }
+    
+    String newPasswordHash = util.SecurityUtils.hashPassword(newPassword);
+    user.setPasswordHash(newPasswordHash);
+    database.saveUser(user);
+}
 }

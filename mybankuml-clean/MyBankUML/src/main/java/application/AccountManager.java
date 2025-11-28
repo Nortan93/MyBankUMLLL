@@ -1,18 +1,25 @@
 package application;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import data.DatabaseRepository;
 import model.Account;
 import model.Transaction;
 import util.SecurityUtils;
-
-import java.math.BigDecimal;
-import java.util.Optional;
 
 public class AccountManager {
     private DatabaseRepository database;
 
     public AccountManager(DatabaseRepository database) {
         this.database = database;
+    }
+
+    /**
+     * Get all accounts for a specific user
+     */
+    public List<Account> getAccountsByUserId(String userId) {
+        return database.findAccountsByUserID(userId);
     }
 
     public void deposit(String accountNumber, BigDecimal amount) throws Exception {

@@ -1,16 +1,37 @@
-[
-  {
-    "logID": "LOG001",
-    "adminID": "U001",
-    "action": "CREATE_USER",
-    "targetUserID": "U002",
-    "timestamp": "2024-01-10T08:30:00"
-  },
-  {
-    "logID": "LOG002",
-    "adminID": "U001",
-    "action": "CREATE_USER",
-    "targetUserID": "U003",
-    "timestamp": "2024-01-12T09:15:00"
-  }
-]
+[ {
+  "logID" : "LOG001",
+  "adminID" : "U001",
+  "action" : "CREATE_USER",
+  "targetUserID" : "U002",
+  "timestamp" : "2024-01-10T08:30:00"
+}, {
+  "logID" : "LOG002",
+  "adminID" : "U001",
+  "action" : "CREATE_USER",
+  "targetUserID" : "U003",
+  "timestamp" : "2024-01-12T09:15:00"
+}, {
+  "logID" : "9b742c24-10d0-4fc9-981b-d750bfebec1f",
+  "adminID" : "U001",
+  "action" : "CREATE_USER",
+  "targetUserID" : "bbb832b6-dbec-414a-ac3f-66780812e42b",
+  "timestamp" : "2025-11-28T01:21:21.570349200"
+}, {
+  "logID" : "ae2bddc4-dfc6-4665-8dfb-d3e9d0c3a8d8",
+  "adminID" : "U001",
+  "action" : "UPDATE_STATUS_INACTIVE",
+  "targetUserID" : "U003",
+  "timestamp" : "2025-11-28T01:21:34.319484800"
+}, {
+  "logID" : "045583da-b0ed-42f9-9c9b-7f437bd6357f",
+  "adminID" : "U001",
+  "action" : "UPDATE_STATUS_ACTIVE",
+  "targetUserID" : "U003",
+  "timestamp" : "2025-11-28T01:22:32.217681500"
+}, {
+  "logID" : "ae429dcf-7a95-4acb-afbc-5f876677d89f",
+  "adminID" : "U001",
+  "action" : "CREATE_USER",
+  "targetUserID" : "b0b8739e-2172-49a7-abf7-a10c8aff72fb",
+  "timestamp" : "2025-11-28T01:55:33.786198100"
+} ]

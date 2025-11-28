@@ -99,8 +99,21 @@ public class JsonFileService implements DatabaseRepository {
 
     @Override
     public void saveAccount(Account account) {
-        accounts.removeIf(a -> a.getAccountNumber().equals(account.getAccountNumber()));
-        accounts.add(account);
+        // FIXED: Update in place to maintain order and avoid reference issues
+        boolean found = false;
+        for (int i = 0; i < accounts.size(); i++) {
+            if (accounts.get(i).getAccountNumber().equals(account.getAccountNumber())) {
+                accounts.set(i, account);  // Replace at same position
+                found = true;
+                break;
+            }
+        }
+        
+        // If not found, add new account
+        if (!found) {
+            accounts.add(account);
+        }
+        
         saveData(ACCOUNTS_FILE, accounts);
     }
 
