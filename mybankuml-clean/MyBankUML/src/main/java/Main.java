@@ -43,21 +43,23 @@ public class Main {
 
         // 5. Register API Routes
         
-        // --- Authentication ---
+        // --- Auth ---
         app.post("/api/login", authController::login);
         app.post("/api/logout", authController::logout);
-        app.post("/api/change-password", authController::changePassword);
+        app.post("/api/change-password", authController::changePassword);  // <-- ADD THIS
+
 
         // --- Account & Transactions ---
-        app.get("/api/accounts", accountController::getAccounts);
-        app.get("/api/accounts/user/{userId}", accountController::getAccountsByUser);
+        app.get("/api/accounts", accountController::getAccounts);  // Get logged-in user's accounts
+        app.get("/api/accounts/user/{userId}", accountController::getAccountsByUser);  // Get specific user's accounts (Teller/Admin)
+        app.get("/api/transactions/{accountNumber}", accountController::getTransactionHistory);  // NEW: Get transaction history
         app.post("/api/transaction", accountController::handleTransaction);
         
-        
-        // --- Admin Functions ---
+        // --- Admin ---
         app.post("/api/admin/create-user", adminController::createUser);
         app.patch("/api/admin/users/{id}", adminController::updateUser);
         app.get("/api/admin/audit-logs", adminController::getAuditLogs);
+
         
         // --- Search ---
         app.get("/api/search", searchController::searchUsers);

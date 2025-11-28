@@ -12,6 +12,7 @@ import application.RoleManager;
 import application.TransactionManager;
 import io.javalin.http.Context;
 import model.Account;
+import model.Transaction;
 import model.User;
 
 public class AccountController {
@@ -92,6 +93,50 @@ public class AccountController {
 
         } catch (Exception e) {
             ctx.status(400).json(Map.of("error", e.getMessage() != null ? e.getMessage() : "Failed to fetch accounts"));
+        }
+    }
+
+    /**
+     * NEW: Get transaction history for a specific account
+     * Endpoint: GET /api/transactions/{accountNumber}
+     */
+    public void getTransactionHistory(Context ctx) {
+        try {
+            // 1. Verify Session
+            String token = ctx.header("Authorization");
+            if (token != null && token.startsWith("Bearer ")) {
+                token = token.substring(7);
+            }
+            
+            User user = authManager.getUserByToken(token);
+            if (user == null) {
+                ctx.status(401).json(Map.of("error", "Unauthorized"));
+                return;
+            }
+
+            // 2. Get account number from path parameter
+            String accountNumber = ctx.pathParam("accountNumber");
+            
+            // 3. Verify the account belongs to the user (or user is Teller/Admin)
+            List<Account> userAccounts = accountManager.getAccountsByUserId(user.getUserID());
+            boolean isOwnAccount = userAccounts.stream()
+                .anyMatch(acc -> acc.getAccountNumber().equals(accountNumber));
+            
+            boolean isTellerOrAdmin = roleManager.canAccess(user, RoleManager.Feature.SEARCH_CUSTOMERS);
+            
+            if (!isOwnAccount && !isTellerOrAdmin) {
+                ctx.status(403).json(Map.of("error", "Access Denied"));
+                return;
+            }
+
+            // 4. Get transaction history using TransactionManager
+            List<Transaction> transactions = transactionManager.getTransactionsByAccount(accountNumber);
+            
+            // 5. Return transactions as JSON
+            ctx.status(200).json(transactions);
+
+        } catch (Exception e) {
+            ctx.status(400).json(Map.of("error", e.getMessage() != null ? e.getMessage() : "Failed to fetch transactions"));
         }
     }
 

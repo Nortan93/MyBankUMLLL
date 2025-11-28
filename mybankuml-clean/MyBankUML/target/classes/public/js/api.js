@@ -19,10 +19,11 @@ class BankAPI {
         }
 
         const user = await response.json();
-        this.token = user.token;
+        this.token = user.token;  // Store token from response
         
+        // Make sure username is included in stored user data
         if (!user.username) {
-            user.username = username;
+            user.username = username;  // Add username if backend didn't include it
         }
         
         sessionStorage.setItem('token', this.token);
@@ -75,6 +76,22 @@ class BankAPI {
         if (!response.ok) {
             const error = await response.text();
             throw new Error(error || 'Failed to fetch user accounts');
+        }
+
+        return await response.json();
+    }
+
+    async getTransactionHistory(accountNumber) {
+        const response = await fetch(`${this.baseURL}/transactions/${accountNumber}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${this.token}`
+            }
+        });
+
+        if (!response.ok) {
+            const error = await response.text();
+            throw new Error(error || 'Failed to fetch transaction history');
         }
 
         return await response.json();
@@ -134,6 +151,26 @@ class BankAPI {
         return await response.json();
     }
 
+    async updatePassword({ currentPassword, newPassword }) {
+    const response = await fetch('/api/change-password', {
+        method: 'POST',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${this.token}`   // <- IMPORTANT
+        },
+        body: JSON.stringify({ currentPassword, newPassword })
+    });
+
+    if (!response.ok) {
+        const errText = await response.text();
+        throw new Error(errText || 'Failed to update password');
+    }
+
+    return await response.json();
+}
+
+
+
     async searchUsers(query) {
         const response = await fetch(`${this.baseURL}/search?q=${encodeURIComponent(query)}`, {
             headers: {
@@ -163,4 +200,5 @@ class BankAPI {
 
         return await response.json();
     }
+
 }

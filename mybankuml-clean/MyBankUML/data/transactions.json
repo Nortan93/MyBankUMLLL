@@ -383,4 +383,18 @@
   "amount" : 10000,
   "type" : "DEPOSIT",
   "timestamp" : "2025-11-28T01:58:12.832774"
+}, {
+  "transactionID" : "1fe7017a-fae0-43d4-bc0f-66ad618016e4",
+  "sourceAccountNumber" : "A002",
+  "targetAccountNumber" : null,
+  "amount" : 20000,
+  "type" : "DEPOSIT",
+  "timestamp" : "2025-11-28T11:06:08.355672200"
+}, {
+  "transactionID" : "5ce17d61-16f1-49f0-ba51-bbe2cce2bf7f",
+  "sourceAccountNumber" : "A002",
+  "targetAccountNumber" : "A001",
+  "amount" : 20000,
+  "type" : "TRANSFER",
+  "timestamp" : "2025-11-28T11:06:26.678177600"
 } ]

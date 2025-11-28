@@ -114,6 +114,65 @@
             color: #007bff;
             margin-top: 0;
         }
+
+        .update-btn {
+            display: inline-block;
+            background-color: #b4bcc1; /* blue to match headings/buttons */
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 30px; /* space from transaction form above */
+            margin-bottom: 20px; /* space before panel below */
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+
+        .update-btn:hover {
+            background-color: #647f9b; /* darker blue on hover */
+            transform: translateY(-2px);
+        }
+
+
+        .update-info-panel {
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .update-info-panel h3 {
+            margin-top: 0;
+            color: #007bff;
+            margin-bottom: 15px;
+        }
+
+        .update-info-panel hr {
+            border: none;
+            border-top: 1px solid #ddd;
+            margin: 20px 0;
+        }
+
+        .update-info-panel .form-group {
+            margin-bottom: 15px;
+        }
+
+        .update-info-panel input {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .update-info-panel button {
+            margin-top: 10px;
+        }
+
+        
+
     </style>
 </head>
 <body>
@@ -133,12 +192,39 @@
                 <form id="searchForm">
                     <div class="form-group">
                         <label for="searchQuery">Search by Name or ID:</label>
-                        <input type="text" id="searchQuery" required placeholder="e.g. John, U001">
+                        <input type="text" id="searchQuery" required placeholder="e.g. John, U001" autocomplete="off">
                     </div>
                     <button type="submit" class="btn btn-primary">Search</button>
                 </form>
                 <div id="searchResults"></div>
             </div>
+
+            <div class="updateInfo-section">
+            <button id="tellerUpdatePasswordBtn" class="btn update-btn">Update your Information</button>
+
+            <div id="tellerUpdatePasswordPanel" class="update-info-panel" style="display:none;">
+                <h3>Change your Password</h3>
+                <form id="tellerChangePasswordForm">
+                    <div class="form-group">
+                        <label for="tellerCurrentPassword">Current Password:</label>
+                        <input type="password" id="tellerCurrentPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tellerNewPassword">New Password:</label>
+                        <input type="password" id="tellerNewPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="tellerConfirmPassword">Confirm New Password:</label>
+                        <input type="password" id="tellerConfirmPassword" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                    <div id="tellerChangePasswordMessage" class="message"></div>
+                </form>
+            </div>
+        </div>
+
+
+
         </div>
 
         <div id="customerView" class="view" style="display: none;">
@@ -150,10 +236,19 @@
 
             <h2 id="accountsHeader">My Accounts</h2>
             <div id="accountsList"></div>
+
+            <h2>Transaction History</h2>
+            <div class="form-group">
+                <label for="historyAccountSelect">Select Account:</label>
+                <select id="historyAccountSelect">
+                    <option value="">Select Account</option>
+                </select>
+            </div>
+            <div id="transactionHistory" style="margin-top: 20px;"></div>
             
             <h2>Make a Transaction</h2>
             <form id="transactionForm">
-                <div class="form-group">
+                <div class="form-group" style="margin-top: 20px;">
                     <label for="txType">Transaction Type:</label>
                     <select id="txType" required>
                         <option value="DEPOSIT">Deposit</option>
@@ -176,7 +271,34 @@
                 <button type="submit" class="btn btn-primary">Submit Transaction</button>
                 <div id="txMessage" class="message"></div>
             </form>
+
+            <div class="updateInfo-section">
+                <button id="updatePasswordBtn" class="btn update-btn">Update your Information</button>
+
+                <div id="updatePasswordPanel" class="update-info-panel" style="display: none;">
+                    <!-- Change Password Form -->
+                    <h3>Change your Password</h3>
+                    <form id="changePasswordForm">
+                        <div class="form-group">
+                            <label for="currentPassword">Current Password:</label>
+                            <input type="password" id="currentPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="newPassword">New Password:</label>
+                            <input type="password" id="newPassword" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmPassword">Confirm New Password:</label>
+                            <input type="password" id="confirmPassword" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Password</button>
+                        <div id="changePasswordMessage" class="message"></div>
+                    </form>
+                </div>
+            </div>
+
         </div>
+
 
         <div id="adminView" class="view" style="display: none;">
             <h2>Administrator Functions</h2>
@@ -239,6 +361,11 @@
         let currentUser = null;
         let tellerSelectedUser = null;
 
+        document.getElementById('updateInfoBtn')?.addEventListener('click', () => {
+        const panel = document.getElementById('updateInfoPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
+
         // 1. Initialization
         window.addEventListener('DOMContentLoaded', async () => {
             currentUser = api.getCurrentUser();
@@ -248,7 +375,8 @@
             }
 
             document.getElementById('welcomeMessage').textContent = 
-                `Welcome, ${currentUser.username} (${currentUser.role})`;
+                `Welcome, ${currentUser.fullName} (${currentUser.role})`;
+
 
             if (currentUser.role === 'CUSTOMER') {
                 document.getElementById('customerView').style.display = 'block';
@@ -260,7 +388,7 @@
             }
         });
 
-        // 2. Load Accounts (Shared Logic)
+        /// 2. Load Accounts (Shared Logic)
         async function loadAccounts(specificUserId = null) {
             const accountsList = document.getElementById('accountsList');
             const sourceSelect = document.getElementById('sourceAccount');
@@ -291,8 +419,17 @@
                 // Render Source Dropdown
                 sourceSelect.innerHTML = '<option value="">Select Account</option>' +
                     accounts.map(acc => 
-                        `<option value="${acc.accountNumber}">${acc.type} - ${acc.accountNumber} ($${acc.balance.toFixed(2)})</option>`
+                        `<option value="${acc.accountNumber}">${acc.type} - ${acc.accountNumber} (${acc.balance.toFixed(2)})</option>`
                     ).join('');
+                
+                // Populate Transaction History Dropdown
+                const historySelect = document.getElementById('historyAccountSelect');
+                if (historySelect) {
+                    historySelect.innerHTML = '<option value="">Select Account</option>' +
+                        accounts.map(acc => 
+                            `<option value="${acc.accountNumber}">${acc.type} - ${acc.accountNumber}</option>`
+                        ).join('');
+                }
                     
             } catch (error) {
                 console.error(error);
@@ -300,7 +437,65 @@
             }
         }
 
-        // 3. Teller Search & Selection
+        // 3. Load Transaction History
+        async function loadTransactionHistory(accountNumber) {
+            const container = document.getElementById('transactionHistory');
+            
+            if (!accountNumber) {
+                container.innerHTML = '<div class="form-group"><p>Please select an account to view transaction history</p></div>';
+                return;
+}
+            
+            container.innerHTML = '<p>Loading transactions...</p>';
+            
+            try {
+                const transactions = await api.getTransactionHistory(accountNumber);
+                
+                if (!transactions || transactions.length === 0) {
+                    container.innerHTML = '<p>No transactions found for this account</p>';
+                    return;
+                }
+                
+                container.innerHTML = `
+                    <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                        <thead>
+                            <tr style="background: #f5f5f5;">
+                                <th style="border: 1px solid #ddd; padding: 8px;">Date</th>
+                                <th style="border: 1px solid #ddd; padding: 8px;">Type</th>
+                                <th style="border: 1px solid #ddd; padding: 8px;">Amount</th>
+                                <th style="border: 1px solid #ddd; padding: 8px;">From/To</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${transactions.map(tx => {
+                                const isDebit = tx.sourceAccountNumber === accountNumber;
+                                const otherAccount = isDebit ? tx.targetAccountNumber : tx.sourceAccountNumber;
+                                
+                                return `
+                                    <tr>
+                                        <td style="border: 1px solid #ddd; padding: 8px;">${new Date(tx.timestamp).toLocaleString()}</td>
+                                        <td style="border: 1px solid #ddd; padding: 8px;">${tx.type}</td>
+                                        <td style="border: 1px solid #ddd; padding: 8px; color: ${isDebit && tx.type === 'TRANSFER' ? 'red' : 'green'};">
+                                            ${isDebit && tx.type === 'TRANSFER' ? '-' : '+'}${tx.amount.toFixed(2)}
+                                        </td>
+                                        <td style="border: 1px solid #ddd; padding: 8px;">${otherAccount || 'N/A'}</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                container.innerHTML = `<p class="error">Failed to load transactions: ${error.message}</p>`;
+            }
+        }
+
+        // Transaction History Dropdown Change
+        document.getElementById('historyAccountSelect')?.addEventListener('change', (e) => {
+            loadTransactionHistory(e.target.value);
+        });
+
+        // 4. Teller Search & Selection
         document.getElementById('searchForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const query = document.getElementById('searchQuery').value;
@@ -346,7 +541,7 @@
             document.getElementById('accountsList').innerHTML = '';
         };
 
-        // 4. Transaction Handling
+        // 5. Transaction Handling
         document.getElementById('txType')?.addEventListener('change', async (e) => {
             const targetGroup = document.getElementById('targetAccountGroup');
             const targetSelect = document.getElementById('targetAccount');
@@ -416,7 +611,7 @@
             }
         });
 
-        // 5. Admin: Create User
+        // 6. Admin: Create User
         document.getElementById('createUserForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const message = document.getElementById('createUserMessage');
@@ -440,7 +635,7 @@
             }
         });
 
-        // 6. Admin: Search Users
+        // 7. Admin: Search Users
         document.getElementById('adminSearchForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const query = document.getElementById('adminSearchQuery').value;
@@ -467,7 +662,7 @@
             }
         });
 
-        // 7. Admin: Toggle User Status
+        // 8. Admin: Toggle User Status
         window.toggleUserStatus = async function(userId, currentStatus) {
             try {
                 const newStatus = currentStatus === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
@@ -479,7 +674,7 @@
             }
         };
 
-        // 8. Admin: Load Audit Logs
+        // 9. Admin: Load Audit Logs
         document.getElementById('loadAuditLogsBtn')?.addEventListener('click', async () => {
             const container = document.getElementById('auditLogsContainer');
             container.innerHTML = '<p>Loading audit logs...</p>';
@@ -522,6 +717,59 @@
             await api.logout();
             window.location.href = '/index.html';
         });
+
+
+        // Utility to toggle panel
+            function setupToggle(buttonId, panelId) {
+                const btn = document.getElementById(buttonId);
+                const panel = document.getElementById(panelId);
+                if (btn && panel) {
+                    btn.addEventListener('click', () => {
+                        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+                    });
+                }
+            }
+
+            // Utility for password change form
+            function setupPasswordForm(formId, currentId, newId, confirmId, messageId) {
+                const form = document.getElementById(formId);
+                const message = document.getElementById(messageId);
+
+                if (!form || !message) return;
+
+                form.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+
+                    const currentPassword = document.getElementById(currentId).value;
+                    const newPassword = document.getElementById(newId).value;
+                    const confirmPassword = document.getElementById(confirmId).value;
+
+                    if (newPassword !== confirmPassword) {
+                        message.textContent = "Passwords do not match";
+                        message.className = "message error";
+                        return;
+                    }
+
+                    try {
+                        await api.updatePassword({ currentPassword, newPassword });
+                        message.textContent = "Password updated successfully!";
+                        message.className = "message success";
+                        form.reset();
+                    } catch (err) {
+                        message.textContent = err.message || "Failed to update password";
+                        message.className = "message error";
+                    }
+                });
+            }
+
+            // Setup customer panel
+            setupToggle('updatePasswordBtn', 'updatePasswordPanel');
+            setupPasswordForm('changePasswordForm', 'currentPassword', 'newPassword', 'confirmPassword', 'changePasswordMessage');
+
+            // Setup teller panel
+            setupToggle('tellerUpdatePasswordBtn', 'tellerUpdatePasswordPanel');
+            setupPasswordForm('tellerChangePasswordForm', 'tellerCurrentPassword', 'tellerNewPassword', 'tellerConfirmPassword', 'tellerChangePasswordMessage');
+
     </script>
 </body>
 </html>

@@ -26,6 +26,6 @@
   "accountNumber" : "A001",
   "ownerUserID" : "U003",
   "type" : "CHECKING",
-  "balance" : 0.00,
+  "balance" : 20000.00,
   "creationDate" : "2024-01-15T10:00:00"
 } ]

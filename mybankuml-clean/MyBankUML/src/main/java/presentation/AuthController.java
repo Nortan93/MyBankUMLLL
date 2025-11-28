@@ -23,10 +23,14 @@ public class AuthController {
             Map<String, String> creds = mapper.readValue(ctx.body(), Map.class);
             
             String token = authManager.login(creds.get("username"), creds.get("password"));
+
+            User user = authManager.getUserByToken(token);
             
             ctx.json(Map.of(
                 "token", token,
                 "role", authManager.getUserByToken(token).getRole(), 
+                "fullName", user.getFullName(),   
+                "username", user.getUsername(),
                 "message", "Login successful"
             ));
         } catch (Exception e) {

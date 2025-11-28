@@ -34,4 +34,22 @@
   "action" : "CREATE_USER",
   "targetUserID" : "b0b8739e-2172-49a7-abf7-a10c8aff72fb",
   "timestamp" : "2025-11-28T01:55:33.786198100"
+}, {
+  "logID" : "78cd0194-efe8-4881-b1ff-7af4813da284",
+  "adminID" : "U001",
+  "action" : "UPDATE_STATUS_INACTIVE",
+  "targetUserID" : "U003",
+  "timestamp" : "2025-11-28T10:07:10.323222300"
+}, {
+  "logID" : "e7e4213e-23ad-419b-8aad-cb7cf068379d",
+  "adminID" : "U001",
+  "action" : "UPDATE_STATUS_ACTIVE",
+  "targetUserID" : "U003",
+  "timestamp" : "2025-11-28T10:07:14.438673500"
+}, {
+  "logID" : "946cb59a-a7c0-4a0a-8c7a-39dad316b613",
+  "adminID" : "U001",
+  "action" : "CREATE_USER",
+  "targetUserID" : "810622aa-7ac3-435e-bb12-f7a147f076ac",
+  "timestamp" : "2025-11-28T10:12:18.794958800"
 } ]

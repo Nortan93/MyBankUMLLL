@@ -19,9 +19,19 @@
   "twoFactorEnabled" : false,
   "dashboardRoute" : "/dashboard"
 }, {
+  "userID" : "810622aa-7ac3-435e-bb12-f7a147f076ac",
+  "username" : "Mike400",
+  "passwordHash" : "$2a$10$ey47NzyTYSoK8IUMVlh0..07spQNhbQwRwTGOB5UYNiOzLTkDI1KG",
+  "fullName" : "Mike Tyson",
+  "role" : "CUSTOMER",
+  "status" : "ACTIVE",
+  "failedLoginAttempts" : 0,
+  "twoFactorEnabled" : false,
+  "dashboardRoute" : "/dashboard"
+}, {
   "userID" : "U003",
   "username" : "customer",
-  "passwordHash" : "$2a$10$6VYRr9iO36q6vp0SLOUJDucXog8lbtpHTxYV7RzXeHG9I.gCQ0PbC",
+  "passwordHash" : "$2a$10$Ooy9AEm3EGt9ODD8Z.vpM.aFT/wKgBXL4xuYj86n0UfBgssdA37ei",
   "fullName" : "John Doe",
   "role" : "CUSTOMER",
   "status" : "ACTIVE",
@@ -31,7 +41,7 @@
 }, {
   "userID" : "U002",
   "username" : "teller",
-  "passwordHash" : "$2a$10$6VYRr9iO36q6vp0SLOUJDucXog8lbtpHTxYV7RzXeHG9I.gCQ0PbC",
+  "passwordHash" : "$2a$10$jGEzgLGA0TX/mXiax5Birea6NZzX.NmFYvjeCRnSEI/2jYsKToKA6",
   "fullName" : "Branch Teller",
   "role" : "TELLER",
   "status" : "ACTIVE",

@@ -1,17 +1,25 @@
 package application;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import data.DatabaseRepository;
 import model.Account;
 import model.Transaction;
 import util.SecurityUtils;
-
-import java.math.BigDecimal;
 
 public class TransactionManager {
     private DatabaseRepository database;
 
     public TransactionManager(DatabaseRepository database) {
         this.database = database;
+    }
+
+    /**
+     * NEW: Get transaction history for a specific account
+     */
+    public List<Transaction> getTransactionsByAccount(String accountNumber) {
+        return database.findTransactionsByAccount(accountNumber);
     }
 
     public void transfer(String sourceAccNum, String targetAccNum, BigDecimal amount) throws Exception {
