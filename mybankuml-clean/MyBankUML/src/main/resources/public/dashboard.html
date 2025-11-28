@@ -117,22 +117,21 @@
 
         .update-btn {
             display: inline-block;
-            background-color: #b4bcc1; /* blue to match headings/buttons */
+            background-color: #b4bcc1;
             color: white;
             border: none;
             padding: 10px 20px;
             border-radius: 8px;
-            margin-top: 30px; /* space from transaction form above */
-            margin-bottom: 20px; /* space before panel below */
+            margin-top: 30px;
+            margin-bottom: 20px;
             cursor: pointer;
             transition: background-color 0.2s ease, transform 0.2s ease;
         }
 
         .update-btn:hover {
-            background-color: #647f9b; /* darker blue on hover */
+            background-color: #647f9b;
             transform: translateY(-2px);
         }
-
 
         .update-info-panel {
             background-color: white;
@@ -147,12 +146,6 @@
             margin-top: 0;
             color: #007bff;
             margin-bottom: 15px;
-        }
-
-        .update-info-panel hr {
-            border: none;
-            border-top: 1px solid #ddd;
-            margin: 20px 0;
         }
 
         .update-info-panel .form-group {
@@ -170,9 +163,6 @@
         .update-info-panel button {
             margin-top: 10px;
         }
-
-        
-
     </style>
 </head>
 <body>
@@ -186,7 +176,32 @@
         </header>
 
         <div id="tellerView" class="view" style="display: none;">
-            <h2>Teller Functions</h2>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0;">Teller Functions</h2>
+                <button id="tellerUpdateBtn" class="btn btn-secondary" style="padding: 5px 15px; font-size: 0.85em;">Update Teller Information</button>
+            </div>
+            
+            <!-- Password Change Panel (Hidden by default) -->
+            <div id="tellerPasswordPanel" class="update-info-panel" style="display: none; margin-bottom: 25px;">
+                <h3>Change Your Password</h3>
+                <form id="tellerPasswordForm">
+                    <div class="form-group">
+                        <label for="tellerCurrentPassword">Current Password:</label>
+                        <input type="password" id="tellerCurrentPassword" required autocomplete="current-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="tellerNewPassword">New Password:</label>
+                        <input type="password" id="tellerNewPassword" required autocomplete="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="tellerConfirmPassword">Confirm New Password:</label>
+                        <input type="password" id="tellerConfirmPassword" required autocomplete="new-password">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Update Password</button>
+                    <div id="tellerPasswordMessage" class="message"></div>
+                </form>
+            </div>
+
             <div class="search-section">
                 <h3>Find Customer</h3>
                 <form id="searchForm">
@@ -198,33 +213,6 @@
                 </form>
                 <div id="searchResults"></div>
             </div>
-
-            <div class="updateInfo-section">
-            <button id="tellerUpdatePasswordBtn" class="btn update-btn">Update your Information</button>
-
-            <div id="tellerUpdatePasswordPanel" class="update-info-panel" style="display:none;">
-                <h3>Change your Password</h3>
-                <form id="tellerChangePasswordForm">
-                    <div class="form-group">
-                        <label for="tellerCurrentPassword">Current Password:</label>
-                        <input type="password" id="tellerCurrentPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tellerNewPassword">New Password:</label>
-                        <input type="password" id="tellerNewPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="tellerConfirmPassword">Confirm New Password:</label>
-                        <input type="password" id="tellerConfirmPassword" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary">Update Password</button>
-                    <div id="tellerChangePasswordMessage" class="message"></div>
-                </form>
-            </div>
-        </div>
-
-
-
         </div>
 
         <div id="customerView" class="view" style="display: none;">
@@ -276,29 +264,26 @@
                 <button id="updatePasswordBtn" class="btn update-btn">Update your Information</button>
 
                 <div id="updatePasswordPanel" class="update-info-panel" style="display: none;">
-                    <!-- Change Password Form -->
                     <h3>Change your Password</h3>
                     <form id="changePasswordForm">
                         <div class="form-group">
                             <label for="currentPassword">Current Password:</label>
-                            <input type="password" id="currentPassword" required>
+                            <input type="password" id="currentPassword" required autocomplete="current-password">
                         </div>
                         <div class="form-group">
                             <label for="newPassword">New Password:</label>
-                            <input type="password" id="newPassword" required>
+                            <input type="password" id="newPassword" required autocomplete="new-password">
                         </div>
                         <div class="form-group">
                             <label for="confirmPassword">Confirm New Password:</label>
-                            <input type="password" id="confirmPassword" required>
+                            <input type="password" id="confirmPassword" required autocomplete="new-password">
                         </div>
                         <button type="submit" class="btn btn-primary">Update Password</button>
                         <div id="changePasswordMessage" class="message"></div>
                     </form>
                 </div>
             </div>
-
         </div>
-
 
         <div id="adminView" class="view" style="display: none;">
             <h2>Administrator Functions</h2>
@@ -308,11 +293,11 @@
                 <form id="createUserForm">
                     <div class="form-group">
                         <label>Username:</label>
-                        <input type="text" id="newUsername" required>
+                        <input type="text" id="newUsername" required autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label>Password:</label>
-                        <input type="password" id="newPassword" required>
+                        <input type="password" id="createUserPassword" required autocomplete="new-password">
                     </div>
                     <div class="form-group">
                         <label>Role:</label>
@@ -361,11 +346,6 @@
         let currentUser = null;
         let tellerSelectedUser = null;
 
-        document.getElementById('updateInfoBtn')?.addEventListener('click', () => {
-        const panel = document.getElementById('updateInfoPanel');
-        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-        });
-
         // 1. Initialization
         window.addEventListener('DOMContentLoaded', async () => {
             currentUser = api.getCurrentUser();
@@ -377,9 +357,9 @@
             document.getElementById('welcomeMessage').textContent = 
                 `Welcome, ${currentUser.fullName} (${currentUser.role})`;
 
-
             if (currentUser.role === 'CUSTOMER') {
                 document.getElementById('customerView').style.display = 'block';
+                document.querySelector('.updateInfo-section').style.display = 'block';
                 await loadAccounts();
             } else if (currentUser.role === 'TELLER') {
                 document.getElementById('tellerView').style.display = 'block';
@@ -388,7 +368,7 @@
             }
         });
 
-        /// 2. Load Accounts (Shared Logic)
+        // 2. Load Accounts
         async function loadAccounts(specificUserId = null) {
             const accountsList = document.getElementById('accountsList');
             const sourceSelect = document.getElementById('sourceAccount');
@@ -407,7 +387,6 @@
                     return;
                 }
                 
-                // Render Cards
                 accountsList.innerHTML = accounts.map(acc => `
                     <div class="account-card">
                         <h3>${acc.type} Account</h3>
@@ -416,13 +395,11 @@
                     </div>
                 `).join('');
                 
-                // Render Source Dropdown
                 sourceSelect.innerHTML = '<option value="">Select Account</option>' +
                     accounts.map(acc => 
-                        `<option value="${acc.accountNumber}">${acc.type} - ${acc.accountNumber} (${acc.balance.toFixed(2)})</option>`
+                        `<option value="${acc.accountNumber}">${acc.type} - ${acc.accountNumber} ($${acc.balance.toFixed(2)})</option>`
                     ).join('');
                 
-                // Populate Transaction History Dropdown
                 const historySelect = document.getElementById('historyAccountSelect');
                 if (historySelect) {
                     historySelect.innerHTML = '<option value="">Select Account</option>' +
@@ -444,7 +421,7 @@
             if (!accountNumber) {
                 container.innerHTML = '<div class="form-group"><p>Please select an account to view transaction history</p></div>';
                 return;
-}
+            }
             
             container.innerHTML = '<p>Loading transactions...</p>';
             
@@ -476,7 +453,7 @@
                                         <td style="border: 1px solid #ddd; padding: 8px;">${new Date(tx.timestamp).toLocaleString()}</td>
                                         <td style="border: 1px solid #ddd; padding: 8px;">${tx.type}</td>
                                         <td style="border: 1px solid #ddd; padding: 8px; color: ${isDebit && tx.type === 'TRANSFER' ? 'red' : 'green'};">
-                                            ${isDebit && tx.type === 'TRANSFER' ? '-' : '+'}${tx.amount.toFixed(2)}
+                                            ${isDebit && tx.type === 'TRANSFER' ? '-' : '+'}$${tx.amount.toFixed(2)}
                                         </td>
                                         <td style="border: 1px solid #ddd; padding: 8px;">${otherAccount || 'N/A'}</td>
                                     </tr>
@@ -490,7 +467,6 @@
             }
         }
 
-        // Transaction History Dropdown Change
         document.getElementById('historyAccountSelect')?.addEventListener('change', (e) => {
             loadTransactionHistory(e.target.value);
         });
@@ -524,8 +500,8 @@
             
             document.getElementById('searchResults').innerHTML = '';
             document.getElementById('searchQuery').value = '';
-            
             document.getElementById('customerView').style.display = 'block';
+            document.querySelector('.updateInfo-section').style.display = 'none';
             document.getElementById('tellerSelectionBanner').style.display = 'flex';
             document.getElementById('selectedUserName').textContent = `Operating on: ${userName} (${userId})`;
             document.getElementById('accountsHeader').textContent = `Accounts for ${userName}`;
@@ -589,7 +565,6 @@
                 };
 
                 await api.makeTransaction(data);
-
                 txMessage.textContent = 'Transaction Successful!';
                 txMessage.className = 'message success';
                 e.target.reset();
@@ -605,13 +580,12 @@
                 } catch(e) {
                     if (error.message) msg = error.message;
                 }
-
                 txMessage.textContent = msg;
                 txMessage.className = 'message error';
             }
         });
 
-        // 6. Admin: Create User
+        // 6. Admin Functions
         document.getElementById('createUserForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const message = document.getElementById('createUserMessage');
@@ -619,7 +593,7 @@
             try {
                 const userData = {
                     username: document.getElementById('newUsername').value,
-                    password: document.getElementById('newPassword').value,
+                    password: document.getElementById('createUserPassword').value,
                     role: document.getElementById('newRole').value,
                     name: document.getElementById('newName').value,
                     email: document.getElementById('newEmail').value
@@ -635,7 +609,6 @@
             }
         });
 
-        // 7. Admin: Search Users
         document.getElementById('adminSearchForm')?.addEventListener('submit', async (e) => {
             e.preventDefault();
             const query = document.getElementById('adminSearchQuery').value;
@@ -662,7 +635,6 @@
             }
         });
 
-        // 8. Admin: Toggle User Status
         window.toggleUserStatus = async function(userId, currentStatus) {
             try {
                 const newStatus = currentStatus === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
@@ -674,7 +646,6 @@
             }
         };
 
-        // 9. Admin: Load Audit Logs
         document.getElementById('loadAuditLogsBtn')?.addEventListener('click', async () => {
             const container = document.getElementById('auditLogsContainer');
             container.innerHTML = '<p>Loading audit logs...</p>';
@@ -712,64 +683,57 @@
             }
         });
 
+        // 7. Password Change - Generic Handler
+        function setupPasswordForm(formId, currentId, newId, confirmId, messageId) {
+            const form = document.getElementById(formId);
+            const message = document.getElementById(messageId);
+
+            if (!form || !message) return;
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const currentPassword = document.getElementById(currentId).value;
+                const newPassword = document.getElementById(newId).value;
+                const confirmPassword = document.getElementById(confirmId).value;
+
+                if (newPassword !== confirmPassword) {
+                    message.textContent = "Passwords do not match";
+                    message.className = "message error";
+                    return;
+                }
+
+                try {
+                    await api.updatePassword({ currentPassword, newPassword });
+                    message.textContent = "Password updated successfully!";
+                    message.className = "message success";
+                    form.reset();
+                } catch (err) {
+                    message.textContent = err.message || "Failed to update password";
+                    message.className = "message error";
+                }
+            });
+        }
+
+        // Setup Customer Password Change (with toggle button)
+        document.getElementById('updatePasswordBtn')?.addEventListener('click', () => {
+            const panel = document.getElementById('updatePasswordPanel');
+            if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
+        setupPasswordForm('changePasswordForm', 'currentPassword', 'newPassword', 'confirmPassword', 'changePasswordMessage');
+
+        // Setup Teller Password Change (with toggle button)
+        document.getElementById('tellerUpdateBtn')?.addEventListener('click', () => {
+            const panel = document.getElementById('tellerPasswordPanel');
+            if (panel) panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+        });
+        setupPasswordForm('tellerPasswordForm', 'tellerCurrentPassword', 'tellerNewPassword', 'tellerConfirmPassword', 'tellerPasswordMessage');
+
         // Logout
         document.getElementById('logoutBtn').addEventListener('click', async () => {
             await api.logout();
             window.location.href = '/index.html';
         });
-
-
-        // Utility to toggle panel
-            function setupToggle(buttonId, panelId) {
-                const btn = document.getElementById(buttonId);
-                const panel = document.getElementById(panelId);
-                if (btn && panel) {
-                    btn.addEventListener('click', () => {
-                        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
-                    });
-                }
-            }
-
-            // Utility for password change form
-            function setupPasswordForm(formId, currentId, newId, confirmId, messageId) {
-                const form = document.getElementById(formId);
-                const message = document.getElementById(messageId);
-
-                if (!form || !message) return;
-
-                form.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-
-                    const currentPassword = document.getElementById(currentId).value;
-                    const newPassword = document.getElementById(newId).value;
-                    const confirmPassword = document.getElementById(confirmId).value;
-
-                    if (newPassword !== confirmPassword) {
-                        message.textContent = "Passwords do not match";
-                        message.className = "message error";
-                        return;
-                    }
-
-                    try {
-                        await api.updatePassword({ currentPassword, newPassword });
-                        message.textContent = "Password updated successfully!";
-                        message.className = "message success";
-                        form.reset();
-                    } catch (err) {
-                        message.textContent = err.message || "Failed to update password";
-                        message.className = "message error";
-                    }
-                });
-            }
-
-            // Setup customer panel
-            setupToggle('updatePasswordBtn', 'updatePasswordPanel');
-            setupPasswordForm('changePasswordForm', 'currentPassword', 'newPassword', 'confirmPassword', 'changePasswordMessage');
-
-            // Setup teller panel
-            setupToggle('tellerUpdatePasswordBtn', 'tellerUpdatePasswordPanel');
-            setupPasswordForm('tellerChangePasswordForm', 'tellerCurrentPassword', 'tellerNewPassword', 'tellerConfirmPassword', 'tellerChangePasswordMessage');
-
     </script>
 </body>
 </html>

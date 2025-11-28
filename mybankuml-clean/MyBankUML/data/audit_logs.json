@@ -52,4 +52,22 @@
   "action" : "CREATE_USER",
   "targetUserID" : "810622aa-7ac3-435e-bb12-f7a147f076ac",
   "timestamp" : "2025-11-28T10:12:18.794958800"
+}, {
+  "logID" : "a369af25-6ad6-40f0-bae6-042d3a9248dd",
+  "adminID" : "U001",
+  "action" : "UPDATE_STATUS_INACTIVE",
+  "targetUserID" : "U003",
+  "timestamp" : "2025-11-28T13:52:24.078572"
+}, {
+  "logID" : "cfcee1dc-d681-4a5f-a5ef-eabd57820be0",
+  "adminID" : "U001",
+  "action" : "UPDATE_STATUS_ACTIVE",
+  "targetUserID" : "U003",
+  "timestamp" : "2025-11-28T13:52:29.203113200"
+}, {
+  "logID" : "664908c8-1252-4bed-933e-7dc76fb7ed0a",
+  "adminID" : "U001",
+  "action" : "CREATE_USER",
+  "targetUserID" : "260dc64e-03b2-400e-8000-ebf94e297ff5",
+  "timestamp" : "2025-11-28T13:53:31.030274500"
 } ]
